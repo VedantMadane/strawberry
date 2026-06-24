@@ -6,6 +6,7 @@ try:
     from .commands.locate_definition import (
         locate_definition as locate_definition,
     )
+    from .commands.schema import schema_diff as schema_diff  # noqa: F401
     from .commands.schema_codegen import (
         schema_codegen as schema_codegen,
     )
