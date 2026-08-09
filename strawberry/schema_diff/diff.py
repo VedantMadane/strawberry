@@ -1,8 +1,8 @@
-﻿"""Core schema diff engine using GraphQL's parsed type system."""
+"""Core schema diff engine using GraphQL's parsed type system."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Union, cast
 
 from graphql import (
     GraphQLArgument,
@@ -68,15 +68,15 @@ def _type_kind_name(gql_type: GraphQLNamedType) -> str:
 def type_to_string(gql_type: GraphQLType) -> str:
     """Render a GraphQL type as an SDL type reference string."""
     if is_non_null_type(gql_type):
-        return f"{type_to_string(gql_type.of_type)}!"
+        return f"{type_to_string(cast(Any, gql_type).of_type)}!"
     if is_list_type(gql_type):
-        return f"[{type_to_string(gql_type.of_type)}]"
-    return gql_type.name  # type: ignore[union-attr]
+        return f"[{type_to_string(cast(Any, gql_type).of_type)}]"
+    return cast(Any, gql_type).name
 
 
 def _unwrap_non_null(gql_type: GraphQLType) -> GraphQLType:
     if is_non_null_type(gql_type):
-        return gql_type.of_type
+        return cast(Any, gql_type).of_type
     return gql_type
 
 
@@ -378,15 +378,29 @@ class SchemaDiffer:
                 )
 
             if is_object_type(old_t) and is_object_type(new_t):
-                self._diff_object_type(name, old_t, new_t)
+                self._diff_object_type(
+                    name, cast(GraphQLObjectType, old_t), cast(GraphQLObjectType, new_t)
+                )
             elif is_interface_type(old_t) and is_interface_type(new_t):
-                self._diff_interface_type(name, old_t, new_t)
+                self._diff_interface_type(
+                    name,
+                    cast(GraphQLInterfaceType, old_t),
+                    cast(GraphQLInterfaceType, new_t),
+                )
             elif is_input_object_type(old_t) and is_input_object_type(new_t):
-                self._diff_input_type(name, old_t, new_t)
+                self._diff_input_type(
+                    name,
+                    cast(GraphQLInputObjectType, old_t),
+                    cast(GraphQLInputObjectType, new_t),
+                )
             elif is_enum_type(old_t) and is_enum_type(new_t):
-                self._diff_enum_type(name, old_t, new_t)
+                self._diff_enum_type(
+                    name, cast(GraphQLEnumType, old_t), cast(GraphQLEnumType, new_t)
+                )
             elif is_union_type(old_t) and is_union_type(new_t):
-                self._diff_union_type(name, old_t, new_t)
+                self._diff_union_type(
+                    name, cast(GraphQLUnionType, old_t), cast(GraphQLUnionType, new_t)
+                )
 
     def _diff_object_type(
         self, type_name: str, old_t: GraphQLObjectType, new_t: GraphQLObjectType

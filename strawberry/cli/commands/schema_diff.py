@@ -1,10 +1,11 @@
-﻿"""CLI command: strawberry schema diff <old> <new>."""
+from re import Pattern
+"""CLI command: strawberry schema diff <old> <new>."""
 
 from __future__ import annotations
 
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import Optional, cast
 
 import typer
 
@@ -87,8 +88,8 @@ def _build_config(
 
     return SchemaDiffConfig(
         ignore_codes=ignore_codes,  # type: ignore[arg-type]
-        ignore_field_patterns=ignore_field_patterns,
-        ignore_type_patterns=ignore_type_patterns,
+        ignore_field_patterns=cast(list[str | Pattern[str]], ignore_field_patterns),
+        ignore_type_patterns=cast(list[str | Pattern[str]], ignore_type_patterns),
         severity_overrides=severity_overrides,  # type: ignore[arg-type]
         include_descriptions=include_descriptions,
     )
