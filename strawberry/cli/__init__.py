@@ -1,4 +1,4 @@
-try:
+﻿try:
     from .app import app
     from .commands.codegen import codegen as codegen
     from .commands.dev import dev as dev
@@ -11,6 +11,7 @@ try:
         schema_codegen as schema_codegen,
     )
     from .commands.upgrade import upgrade as upgrade
+    from .commands.schema_diff import schema_diff as schema_diff  # noqa: F401
 
     def run() -> None:
         app()
@@ -19,3 +20,4 @@ except ModuleNotFoundError as exc:
     from strawberry.exceptions import MissingOptionalDependenciesError
 
     raise MissingOptionalDependenciesError(extras=["cli"]) from exc
+
